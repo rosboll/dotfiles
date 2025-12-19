@@ -3,6 +3,31 @@
 # Linux distributions. Source this from your main .zshrc with:
 # [ -f ~/.zshrc.custom ] && source ~/.zshrc.custom
 
+# ===== History Configuration =====
+# These settings override any conflicting options set earlier in the .zshrc
+
+# History file and size settings
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=20000
+
+# Write commands to history immediately (important for tmux sessions)
+setopt INC_APPEND_HISTORY    # Append commands to history file as they're typed
+
+# Do NOT share history in real-time between sessions
+# (Each session maintains its own history until it exits)
+unsetopt SHARE_HISTORY       # Explicitly disable real-time history sharing
+
+# History enhancements
+setopt HIST_IGNORE_ALL_DUPS  # Ignore duplicate entries
+setopt HIST_REDUCE_BLANKS    # Remove superfluous whitespace
+setopt HIST_IGNORE_SPACE     # Ignore commands starting with space
+setopt HIST_VERIFY           # Show command after history expansion before executing
+setopt EXTENDED_HISTORY      # Record timestamp and duration in the history file
+
+# Disable beep on invalid history expansion
+unsetopt BEEP
+
 # ===== Aliases =====
 alias ll='ls -alF'
 alias la='ls -A'
@@ -78,11 +103,4 @@ fi
 
 if [ -d "/usr/local/go/bin" ]; then
   export PATH="/usr/local/go/bin:$PATH"
-fi
-
-# fzf key bindings (Ctrl-R for history search, Alt-C for cd, Ctrl-T for file search)
-if [ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]; then
-    source /usr/share/doc/fzf/examples/key-bindings.zsh
-elif [ -f /usr/share/fzf/key-bindings.zsh ]; then
-    source /usr/share/fzf/key-bindings.zsh
 fi
