@@ -1,0 +1,88 @@
+#################### Personal Custom Config ###############################
+# This file contains portable zsh configuration that works across different
+# Linux distributions. Source this from your main .zshrc with:
+# [ -f ~/.zshrc.custom ] && source ~/.zshrc.custom
+
+# ===== Aliases =====
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias ip='ip --color=auto'
+alias vi='vim'
+alias cal='ncal -bMwW 4' 
+alias uuid='cat /proc/sys/kernel/random/uuid'
+alias isodate="date '+%Y-%m-%d %H:%M:%S'"
+alias ..="cd .."
+alias clip="xclip -selection clipboard"
+alias vivaldi-burp='vivaldi --proxy-server=127.0.0.1:8080'
+
+# ===== Editor Configuration =====
+export VISUAL='vim'
+
+# ===== ZLE Widget for Command Line Editing =====
+# Allows editing current command in $VISUAL with Ctrl-X Ctrl-E
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey '^X^E' edit-command-line
+
+# ===== Utility Functions =====
+
+# JWT decoder with expiry time converted to human-readable date
+jwte() {
+  jq -R 'split(".") |.[0:2] | map(gsub("-"; "+") | gsub("_"; "/") | gsub("%3D"; "=") | @base64d) | map(fromjson) | .[1].exp |= (todate)' <<< $1
+}
+
+# JWT decoder with all timestamps (exp, nbf, iat) converted to human-readable dates
+jwt() {
+  jq -R '
+    split(".")
+    | .[0:2]
+    | map(gsub("-"; "+") | gsub("_"; "/") | gsub("%3D"; "=") | @base64d)
+    | map(fromjson)
+    | .[1] |= (
+        if .exp then .exp |= todate else . end
+        | if .nbf then .nbf |= todate else . end
+        | if .iat then .iat |= todate else . end
+      )
+  ' <<< $1
+}
+
+# JWT decoder with epoch timestamps preserved
+jwt-epoch() {
+  jq -R 'split(".") |.[0:2] | map(gsub("-"; "+") | gsub("_"; "/") | gsub("%3D"; "=") | @base64d) | map(fromjson)' <<< $1
+}
+
+# Quick calculator using bc
+calc() {
+  # scale=2 sets the decimal precision to 2 digits
+  echo "scale=2; $@" | bc
+}
+
+# ===== Path Additions =====
+
+# Android SDK tools (only add if directory exists)
+if [ -d "$HOME/Applications/Android" ]; then
+  export ANDROID_HOME=$HOME/Applications/Android
+  export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH
+fi
+
+# Local bin directory for user-installed tools
+if [ -d "$HOME/.local/bin" ]; then
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+
+# Go binaries
+if [ -d "$HOME/go/bin" ]; then
+  export PATH="$HOME/go/bin:$PATH"
+fi
+
+if [ -d "/usr/local/go/bin" ]; then
+  export PATH="/usr/local/go/bin:$PATH"
+fi
+
+# fzf key bindings (Ctrl-R for history search, Alt-C for cd, Ctrl-T for file search)
+if [ -f /usr/share/doc/fzf/examples/key-bindings.zsh ]; then
+    source /usr/share/doc/fzf/examples/key-bindings.zsh
+elif [ -f /usr/share/fzf/key-bindings.zsh ]; then
+    source /usr/share/fzf/key-bindings.zsh
+fi
