@@ -3,7 +3,8 @@
 # Set up the prompt
 autoload -Uz promptinit
 promptinit
-prompt adam1
+# prompt adam1
+PROMPT='%F{14}%~ %F{197}%#%f '
 
 # Use emacs keybindings even if our EDITOR is set to vi
 bindkey -e
