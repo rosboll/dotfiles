@@ -1,10 +1,12 @@
-# ===== Linux Mint Specific Zsh Configuration =====
+# ===== Zsh Configuration =====
 
 # Set up the prompt
 autoload -Uz promptinit
 promptinit
 # prompt adam1
-PROMPT='%F{14}%~ %F{197}%#%f '
+# PROMPT='%F{14}%~ %F{197}%#%f '
+# PROMPT='%F{14}%n@%m %~ %F{197}%#%f '
+PROMPT='%F{208}%n@%m %F{14}%~ %F{197}%#%f '
 
 # Use emacs keybindings even if our EDITOR is set to vi
 bindkey -e
