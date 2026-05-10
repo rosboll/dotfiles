@@ -11,6 +11,9 @@ PROMPT='%F{208}%n@%m %F{14}%~ %F{197}%#%f '
 # Use emacs keybindings even if our EDITOR is set to vi
 bindkey -e
 
+
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+
 # ===== Zsh History Configuration =====
 
 # History file and size settings
