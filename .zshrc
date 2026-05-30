@@ -14,6 +14,23 @@ bindkey -e
 
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
+# Auto-load the SSH key into the agent on first interactive shell after
+# login. Without this, every git/ssh command hangs on a passphrase prompt
+# (especially inside scripts where the prompt is piped through tee and
+# becomes invisible). Lived in .zlogin originally, but KDE Konsole tabs
+# are non-login shells, so the snippet never fired in practice.
+# Guards: skip if not interactive, skip over SSH (the agent isn't local),
+# skip if the key file doesn't exist. ssh-add -l exit codes:
+#   0 = identities loaded, 1 = no identities, 2 = agent not reachable.
+if [[ -o interactive ]] && [[ -z "${SSH_CONNECTION:-}" ]] \
+   && [[ -f "$HOME/.ssh/id_ed25519" ]]; then
+    ssh-add -l &>/dev/null
+    case $? in
+        1) ssh-add "$HOME/.ssh/id_ed25519" ;;
+        2) print -u2 "ssh-agent not reachable (SSH_AUTH_SOCK=$SSH_AUTH_SOCK)" ;;
+    esac
+fi
+
 # ===== Zsh History Configuration =====
 
 # History file and size settings
