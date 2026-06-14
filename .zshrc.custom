@@ -44,6 +44,8 @@ alias ..="cd .."
 alias clip="xclip -selection clipboard"
 alias vivaldi-burp='vivaldi --proxy-server=127.0.0.1:8080'
 alias bat=batcat
+alias nxcreds='sqlite3 -column -header ~/.nxc/workspaces/default/smb.db "SELECT id, domain, username, password, credtype FROM users;"'
+
 
 # ===== Editor Configuration =====
 export VISUAL='vim'
